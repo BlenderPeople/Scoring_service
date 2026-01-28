@@ -110,4 +110,3 @@ def delete_credit(client_id: int, db: Database = Depends(get_db)):
         )
     db.delete_credit(client_id)
     return None
-
