@@ -39,4 +39,4 @@ class ScoreRequest(BaseModel):
 
 class ScoreResponse(BaseModel):
     """Модель ответа с информацией о возможной сумме кредита."""
-    result: float = Field(..., description="Результат скоринга")
+    result: float = Field(..., description="Результат скоринга", example=10000.0)
