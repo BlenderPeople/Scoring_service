@@ -1,0 +1,10 @@
+
+app_name: "Scoring Service"
+version: "1.0.0"
+
+host: "localhost"
+port: 8080
+
+logging:
+  level: "INFO"
+  file: "logs/app.log"

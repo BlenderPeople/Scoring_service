@@ -1,2 +1,2 @@
-from .credit import router as credit_router
-__all__ = ["credit_router"]
+from .scoring import router as score_router
+__all__ = ["score_router"]
