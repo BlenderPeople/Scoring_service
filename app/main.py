@@ -1,7 +1,9 @@
 import logging
 
-from fastapi import FastAPI
-
+from fastapi import FastAPI, Request, Response
+from app.metrics import REQUEST_COUNTER, REQUEST_LATENCY
+import time
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from app.config import get_settings
 from app.routers import score_router
 
@@ -30,7 +32,7 @@ app = FastAPI(
 
 app.include_router(score_router, prefix="/score")
 
-@app.get("/", tags=["root"])
+@app.get("/")
 def root():
     return {
         "message": "Добро пожаловать в Scoring Service API!",
@@ -39,3 +41,16 @@ def root():
         "openapi": "/openapi.json",
     }
 
+@app.middleware("http")
+async def metrics_middleware(request: Request, call_next):
+    start = time.time()
+    response = await call_next(request)
+    duration = time.time() - start
+    status = str(response.status_code)
+    REQUEST_COUNTER.labels(method=request.method, path=request.url.path, status=status).inc()
+    REQUEST_LATENCY.labels(method=request.method, path=request.url.path, status=status).observe(duration)
+    return response
+
+@app.get("/metrics")
+async def metrics():
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
