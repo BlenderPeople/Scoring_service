@@ -21,9 +21,11 @@
     docker compose build - собрать контейнеры
     docker compose up -d - запустить контейнеры в фоне
 
-Приложение скоринга: http://localhost:8080
-    /docs - swagger http://localhost:8080/docs
-    /redoc - redoc  http://localhost:8080/redoc
+Приложение скоринга: http://localhost:8080,
+
+/docs - swagger http://localhost:8080/docs,
+
+/redoc - redoc  http://localhost:8080/redoc,
 
 Prometheus - http://localhost:9090
 
