@@ -1,11 +1,25 @@
 from fastapi import APIRouter, status
-
+import redis.asyncio as redis
 from app.schemas import ScoreResponse, ScoreRequest
+
+redis_client = redis.Redis(host='redis', decode_responses=True)
+
+def make_key(request: ScoreRequest) -> str:
+    history_flag = "non_empty" if request.history else "empty"
+    return f"score:{request.income}:{history_flag}"
+
+async def cached_response(key: str, approved: float) -> ScoreResponse:
+    cached = await redis_client.get(key)
+    if cached is not None:
+        return ScoreResponse(result=float(cached))
+    await redis_client.set(key, approved, ex=300)
+    return ScoreResponse(result=approved)
 
 router = APIRouter(
     tags=["Scoring"],
     responses={404: {"description": "Не найдено"}},
 )
+
 
 @router.post(
     "",
@@ -14,25 +28,13 @@ router = APIRouter(
     summary="Проверить возможность выдачи кредита",
     description="Проверяет возможность выдачи кредита на основе дохода и кредитной истории клиента"
 )
-
-def get_credit(request: ScoreRequest) -> ScoreResponse:
+async def get_credit(request: ScoreRequest) -> ScoreResponse:
     """Получить кредит по client_id."""
-    income = request.income
-    history = request.history
-    if history != []:
-        return ScoreResponse(
-            result = "30000"
-        )
-    if income > 50000 and history == []:
-        return ScoreResponse(
-            result = "20000"
-            )
-    
-    if 30000 < income <= 50000 and history == []:
-        return ScoreResponse(
-            result = "10000"
-        )
-    else: 
-        return ScoreResponse(
-            result = "0"
-        )
+    key = make_key(request)
+    if request.history:
+        return await cached_response(key, 30000.0)
+    if request.income > 50000:
+        return await cached_response(key, 20000.0)
+    if request.income > 30000:
+        return await cached_response(key, 10000.0)
+    return await cached_response(key, 0.0)
