@@ -7,7 +7,7 @@ class HistoryEntry(BaseModel):
     """Модель записи кредитной истории."""
 
     sum: float = Field(..., description="Сумма кредита", example="10000.0")
-    Date: date = Field(..., description="Дата записи", example="2023-01-15")
+    credit_date: date = Field(..., description="Дата записи", example="2023-01-15")
     is_closed: bool = Field(..., description="Статус кредита", example=True)
 
 class ScoreRequest(BaseModel):
@@ -18,8 +18,8 @@ class ScoreRequest(BaseModel):
         default_factory=list,
         description="Список записей кредитной истории",
         example=[
-            {"sum": "10000", "Date": "2023-01-15", "is_closed": True},
-            {"sum": "5000", "Date": "2022-12-10", "is_closed": False},
+            {"sum": "10000", "credit_date": "2023-01-15", "is_closed": True},
+            {"sum": "5000", "credit_date": "2022-12-10", "is_closed": False},
         ],
     
     )
