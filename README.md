@@ -18,9 +18,8 @@
 
 ## Запуск и использование
 
-docker compose build - собрать контейнеры
-
-docker compose up -d - запустить контейнеры в фоне
+    docker compose build - собрать контейнеры
+    docker compose up -d - запустить контейнеры в фоне
 
 Приложение скоринга: http://localhost:8080
     /docs - swagger http://localhost:8080/docs
