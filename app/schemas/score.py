@@ -11,7 +11,7 @@ class HistoryEntry(BaseModel):
     is_closed: bool = Field(..., description="Статус кредита", example=True)
 
 class ScoreRequest(BaseModel):
-    """Ответ с информацией о возможной сумме кредита."""
+    """Модель запроса с информацией о возможной сумме кредита."""
 
     income: float = Field(..., description="Доход клиента", example=50000.0)
     history: List[HistoryEntry] = Field(
@@ -38,5 +38,5 @@ class ScoreRequest(BaseModel):
         return value
 
 class ScoreResponse(BaseModel):
-    """Ответ с информацией о возможной сумме кредита."""
+    """Модель ответа с информацией о возможной сумме кредита."""
     result: float = Field(..., description="Результат скоринга")
